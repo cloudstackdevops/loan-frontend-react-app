@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
 
-const API_BASE = "http://50.17.29.50:3000/loans"; // 👈 replace with your EC2 backend IP
+const API_BASE = "http://50.17.29.50:3000/loans"; // Replace with your EC2 backend IP
 
 function App() {
   const [loans, setLoans] = useState([]);
@@ -36,13 +36,25 @@ function App() {
   const handleSubmit = async (e) => {
     e.preventDefault();
     setLoading(true);
+
     try {
-      await axios.post(API_BASE, { loan: form });
+      await axios.post(API_BASE, {
+        loan: {
+          borrower_name: form.borrower_name,
+          amount: Number(form.amount),
+          term: Number(form.term),
+          interest_rate: Number(form.interest_rate),
+        },
+      });
+
+      // Reset form
       setForm({ borrower_name: "", amount: "", term: "", interest_rate: "" });
+
+      // Refresh loans list
       fetchLoans();
     } catch (err) {
-      alert("Error creating loan");
-      console.error(err);
+      console.error("Error creating loan:", err.response ? err.response.data : err.message);
+      alert("Error creating loan. Check console for details.");
     } finally {
       setLoading(false);
     }
@@ -129,13 +141,13 @@ function App() {
                 {loan.borrower_name}
               </td>
               <td style={{ border: "1px solid #ddd", padding: "8px" }}>
-                {loan.amount}
+                {Number(loan.amount).toFixed(2)}
               </td>
               <td style={{ border: "1px solid #ddd", padding: "8px" }}>
                 {loan.term}
               </td>
               <td style={{ border: "1px solid #ddd", padding: "8px" }}>
-                {loan.interest_rate}%
+                {Number(loan.interest_rate).toFixed(2)}%
               </td>
               <td style={{ border: "1px solid #ddd", padding: "8px" }}>
                 {loan.status}
@@ -149,4 +161,3 @@ function App() {
 }
 
 export default App;
-
