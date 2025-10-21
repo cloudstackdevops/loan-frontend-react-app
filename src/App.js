@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
 
-const API_BASE = "https://ruby-api.cloudstackdevops.co.in/"; // Replace with your EC2 backend IP
+const API_BASE = "https://ruby-api.cloudstackdevops.co.in/loans" // Replace with your EC2 backend IP
 
 function App() {
   const [loans, setLoans] = useState([]);
