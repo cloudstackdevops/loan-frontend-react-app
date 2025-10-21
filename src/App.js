@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
 
-const API_BASE = "https://ruby-api.cloudstackdevops.co.in/loans" // Replace with your EC2 backend IP
+const API_BASE = "https://ruby-api.cloudstackdevops.co.in/loans"; // Replace with your EC2 backend IP
 
 function App() {
   const [loans, setLoans] = useState([]);
@@ -13,7 +13,6 @@ function App() {
   });
   const [loading, setLoading] = useState(false);
 
-  // Fetch loans
   const fetchLoans = async () => {
     try {
       const res = await axios.get(API_BASE);
@@ -27,12 +26,10 @@ function App() {
     fetchLoans();
   }, []);
 
-  // Handle input changes
   const handleChange = (e) => {
     setForm({ ...form, [e.target.name]: e.target.value });
   };
 
-  // Create loan
   const handleSubmit = async (e) => {
     e.preventDefault();
     setLoading(true);
@@ -47,10 +44,7 @@ function App() {
         },
       });
 
-      // Reset form
       setForm({ borrower_name: "", amount: "", term: "", interest_rate: "" });
-
-      // Refresh loans list
       fetchLoans();
     } catch (err) {
       console.error("Error creating loan:", err.response ? err.response.data : err.message);
@@ -61,8 +55,11 @@ function App() {
   };
 
   return (
-    <div style={{ maxWidth: "600px", margin: "30px auto", fontFamily: "Arial" }}>
-      <h2 style={{ textAlign: "center" }}>💰 Loan Management</h2>
+    <div style={{ maxWidth: "650px", margin: "40px auto", fontFamily: "Arial" }}>
+      <h2 style={{ textAlign: "center", color: "#007bff" }}>💰 Loan Management System</h2>
+      <p style={{ textAlign: "center", color: "#555", marginBottom: "20px" }}>
+        Manage loans easily — create, view, and track loan details.
+      </p>
 
       <form onSubmit={handleSubmit} style={{ marginBottom: "30px" }}>
         <input
@@ -107,10 +104,11 @@ function App() {
           style={{
             width: "100%",
             padding: "10px",
-            backgroundColor: "#007bff",
+            backgroundColor: "#28a745",
             color: "#fff",
             border: "none",
             cursor: "pointer",
+            fontWeight: "bold",
           }}
         >
           {loading ? "Creating..." : "Create Loan"}
@@ -161,3 +159,4 @@ function App() {
 }
 
 export default App;
+
