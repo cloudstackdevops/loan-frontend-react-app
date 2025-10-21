@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
 
-const API_BASE = "https://ruby-api.cloudstackdevops.co.in/loans"; // Replace with your EC2 backend IP
+const API_BASE = "https://ruby-api.cloudstackdevops.co.in/loans"; // Backend API
 
 function App() {
   const [loans, setLoans] = useState([]);
@@ -13,6 +13,7 @@ function App() {
   });
   const [loading, setLoading] = useState(false);
 
+  // Fetch loans
   const fetchLoans = async () => {
     try {
       const res = await axios.get(API_BASE);
@@ -26,10 +27,12 @@ function App() {
     fetchLoans();
   }, []);
 
+  // Handle input changes
   const handleChange = (e) => {
     setForm({ ...form, [e.target.name]: e.target.value });
   };
 
+  // Create loan
   const handleSubmit = async (e) => {
     e.preventDefault();
     setLoading(true);
@@ -54,12 +57,21 @@ function App() {
     }
   };
 
+  // Delete loan
+  const handleDelete = async (id) => {
+    if (!window.confirm("Are you sure you want to delete this loan?")) return;
+    try {
+      await axios.delete(`${API_BASE}/${id}`);
+      fetchLoans(); // Refresh list
+    } catch (err) {
+      console.error("Error deleting loan:", err.response ? err.response.data : err.message);
+      alert("Error deleting loan. Check console for details.");
+    }
+  };
+
   return (
-    <div style={{ maxWidth: "650px", margin: "40px auto", fontFamily: "Arial" }}>
-      <h2 style={{ textAlign: "center", color: "#007bff" }}>💰 Loan Management System</h2>
-      <p style={{ textAlign: "center", color: "#555", marginBottom: "20px" }}>
-        Manage loans easily — create, view, and track loan details.
-      </p>
+    <div style={{ maxWidth: "800px", margin: "30px auto", fontFamily: "Arial" }}>
+      <h2 style={{ textAlign: "center" }}>💰 Loan Management</h2>
 
       <form onSubmit={handleSubmit} style={{ marginBottom: "30px" }}>
         <input
@@ -104,11 +116,10 @@ function App() {
           style={{
             width: "100%",
             padding: "10px",
-            backgroundColor: "#28a745",
+            backgroundColor: "#007bff",
             color: "#fff",
             border: "none",
             cursor: "pointer",
-            fontWeight: "bold",
           }}
         >
           {loading ? "Creating..." : "Create Loan"}
@@ -130,25 +141,30 @@ function App() {
             <th style={{ border: "1px solid #ddd", padding: "8px" }}>Term</th>
             <th style={{ border: "1px solid #ddd", padding: "8px" }}>Rate</th>
             <th style={{ border: "1px solid #ddd", padding: "8px" }}>Status</th>
+            <th style={{ border: "1px solid #ddd", padding: "8px" }}>Action</th>
           </tr>
         </thead>
         <tbody>
           {loans.map((loan) => (
             <tr key={loan.id}>
-              <td style={{ border: "1px solid #ddd", padding: "8px" }}>
-                {loan.borrower_name}
-              </td>
-              <td style={{ border: "1px solid #ddd", padding: "8px" }}>
-                {Number(loan.amount).toFixed(2)}
-              </td>
-              <td style={{ border: "1px solid #ddd", padding: "8px" }}>
-                {loan.term}
-              </td>
-              <td style={{ border: "1px solid #ddd", padding: "8px" }}>
-                {Number(loan.interest_rate).toFixed(2)}%
-              </td>
-              <td style={{ border: "1px solid #ddd", padding: "8px" }}>
-                {loan.status}
+              <td style={{ border: "1px solid #ddd", padding: "8px" }}>{loan.borrower_name}</td>
+              <td style={{ border: "1px solid #ddd", padding: "8px" }}>{Number(loan.amount).toFixed(2)}</td>
+              <td style={{ border: "1px solid #ddd", padding: "8px" }}>{loan.term}</td>
+              <td style={{ border: "1px solid #ddd", padding: "8px" }}>{Number(loan.interest_rate).toFixed(2)}%</td>
+              <td style={{ border: "1px solid #ddd", padding: "8px" }}>{loan.status}</td>
+              <td style={{ border: "1px solid #ddd", padding: "8px", textAlign: "center" }}>
+                <button
+                  onClick={() => handleDelete(loan.id)}
+                  style={{
+                    backgroundColor: "#dc3545",
+                    color: "#fff",
+                    border: "none",
+                    padding: "6px 10px",
+                    cursor: "pointer",
+                  }}
+                >
+                  🗑️ Delete
+                </button>
               </td>
             </tr>
           ))}
@@ -159,4 +175,3 @@ function App() {
 }
 
 export default App;
-
