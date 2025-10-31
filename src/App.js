@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
 
-const API_BASE = "https://ruby-api.cloudstackdevops.co.in/loans"; // Backend API
+const API_BASE = "http://loan-backend.cloudstackdevops.co.in/loans/"; // Backend API
 
 function App() {
   const [loans, setLoans] = useState([]);
